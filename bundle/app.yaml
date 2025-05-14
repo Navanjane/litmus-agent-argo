@@ -8,7 +8,9 @@ spec:
   source:
     repoURL: https://github.com/Navanjane/litmus-agent-argo
     targetRevision: main
-    path: bundle              # 👈 Folder containing litmus-agent.yaml
+    path: bundle   
+    directory:
+      recurse: true           # 👈 Folder containing litmus-agent.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
