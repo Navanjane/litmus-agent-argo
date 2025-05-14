@@ -2,20 +2,18 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: litmus-agent
-  namespace: argocd  # Or the namespace where your ArgoCD instance is installed
+  namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://litmuschaos.github.io/litmus-helm/
-    chart: litmus-agent
-    targetRevision: 3.6.0  # Use the desired version
+    repoURL: https://github.com/litmuschaos/litmus-helm.git
+    targetRevision: litmus-agent-3.6.0
+    path: charts/litmus-agent
     helm:
       releaseName: litmus-agent
       values: |
         agent:
           mode: cluster
-          nodeSelector: {}
-          tolerations: []
         global:
           namespace: litmus
   destination:
