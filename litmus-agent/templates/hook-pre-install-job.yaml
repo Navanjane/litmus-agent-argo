@@ -1,0 +1,85 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: install-{{ include "litmus-agent.fullname" . }}
+  labels:
+    {{- include "litmus-agent.labels" . | nindent 4 }}
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      {{- with include "litmus-agent.podAnnotations" . }}
+      annotations:
+        {{- . | indent 8 }}
+      {{- end }}
+      labels:
+        {{- include "litmus-agent.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "litmus-agent.serviceAccountName" . }}
+      containers:
+      - name: {{ .Chart.Name }}
+        imagePullPolicy: Always
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
+        args: ["./litmus-agent", "--action", "create"]
+        envFrom:
+          - secretRef:
+              name: {{ include "litmus-agent.fullname" . }}-hook
+        env:
+          - name: INFRA_NAME
+            value: {{ .Values.INFRA_NAME }}
+          - name: INFRA_DESCRIPTION
+            value: {{ .Values.INFRA_DESCRIPTION | quote }}
+          - name: LITMUS_ENVIRONMENT_ID
+            value: {{ .Values.LITMUS_ENVIRONMENT_ID }}
+          - name: INFRA_MODE
+            value: {{ .Values.global.INFRA_MODE }}
+          - name: INFRA_CONFIGMAP_NAME
+            value: {{ .Values.global.infraConfigName | quote }}
+          - name: INFRA_SECRET_NAME
+            value: {{ .Values.global.infraSecretName | quote }}
+          - name: INFRA_NODE_SELECTOR
+            value: {{ .Values.INFRA_NODE_SELECTOR | quote }}
+
+          - name: PLATFORM_NAME
+            value: {{ .Values.PLATFORM_NAME }}
+
+          - name: SA_EXISTS
+            value: {{ .Values.SA_EXISTS | quote }}
+
+          - name: NS_EXISTS
+            value: {{ .Values.NS_EXISTS | quote }}
+
+          - name: INFRA_TYPE
+            value: {{ .Values.INFRA_TYPE }}
+
+          - name: RELEASE_NAME
+            value: {{ .Release.Name }}
+
+          - name: NAMESPACE
+            value: {{ .Release.Namespace }}
+
+          - name: APP_VERSION 
+            value: {{ .Values.APP_VERSION }}
+
+          - name: SERVICE_ACCOUNT_NAME
+            value: {{ include "litmus-agent.serviceAccountName" . }}
+
+          - name: WORKFLOW_CONTROLER_CONFIGMAP_NAME
+            value: {{ index .Values "workflow-controller" "appSettings" "configmapName" }}
+            
+          - name: CONTAINER_RUNTIME_EXECUTOR
+            value: {{ index .Values "workflow-controller" "appSettings" "containerRuntimeExecutor" | quote }}
+
+          - name: SKIP_SSL
+            value: {{ .Values.SKIP_SSL | quote }}
+
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
