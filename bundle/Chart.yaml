@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: "3.18.0"
 description: A Helm chart to install litmus agent
 name: litmus-agent
-version: 3.6.0
+version: 3.11.2
 home: https://litmuschaos.io
 sources:
   - https://github.com/litmuschaos/litmus
