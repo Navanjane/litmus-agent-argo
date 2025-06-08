@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: "3.11.0"
+description: Litmus agent config
+name: agent-config
+version: 0.1.0
+
