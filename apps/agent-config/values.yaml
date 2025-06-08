@@ -1,0 +1,2 @@
+infraConfigName: subscriber-config
+infraSecretName: subscriber-secret

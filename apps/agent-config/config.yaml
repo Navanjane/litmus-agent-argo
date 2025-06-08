@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: agent-config
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Navanjane/litmus-agent-argo
+    targetRevision: HEAD
+    path: apps/agent-config/Chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-namespace
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
