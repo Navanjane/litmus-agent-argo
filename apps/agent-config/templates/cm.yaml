@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: subscriber-config
+  namespace: litmus
   annotations:
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-1"
