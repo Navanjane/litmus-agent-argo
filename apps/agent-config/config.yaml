@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: agent-config
-  namespace: argocd
+  namespace: litmus
 spec:
   project: default
   source:
