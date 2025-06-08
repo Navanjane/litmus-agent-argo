@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/Navanjane/litmus-agent-argo
     targetRevision: HEAD
-    path: apps/agent-config/Chart
+    path: apps/agent-config
     helm:
       valueFiles:
         - values.yaml
